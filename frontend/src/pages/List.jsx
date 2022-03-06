@@ -76,6 +76,6 @@ const columns = [
         title: 'Link',
         dataIndex: 'link',
         key: 'link',
-        render: text => <a href={text} target="_blank"><LinkOutlined /></a>,
+        render: text => <a href={text} target="_blank" rel="noopener noreferrer"><LinkOutlined /></a>,
     },
 ];
