@@ -25,8 +25,15 @@ async function main() {
 
   console.log("Token address:", token.address);
 
+  const RoleControl = await ethers.getContractFactory("RoleControl");
+  const roleControl = await RoleControl.deploy();
+  await roleControl.deployed();
+
+  console.log("RoleControl address:", roleControl.address);
+
   // We also save the contract's artifacts and address in the frontend directory
   saveFrontendFiles(token);
+  saveFrontendFiles(roleControl);
 }
 
 function saveFrontendFiles(token) {
