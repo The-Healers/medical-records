@@ -1,20 +1,12 @@
 import React from "react";
-
+import { Outlet } from "react-router-dom";
 import Header from "./header/Header";
 
-import Landing from "./pages/Landing"
-import Search from "./pages/Search";
-import List from "./pages/List";
-import UploadDocument from "./pages/UploadDocument";
-
-export const App = () => {
+export default function App() {
   return (
     <>
       <Header />
-      {/* <Landing /> */}
-      {/* <Search /> */}
-      <List />
-      {/* <UploadDocument /> */}
+      <Outlet />
     </>
   );
 };

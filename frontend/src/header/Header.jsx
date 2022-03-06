@@ -1,5 +1,6 @@
 import { PageHeader, Typography, Button } from "antd";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -9,9 +10,9 @@ export default function Header() {
   const options = () => {
     if (!isConnected) {
       return [
-        <Button key="about">About</Button>,
-        <Button key="community">Community</Button>,
-        <Button key="team">Team</Button>,
+        <Link to="/search"  key="search"><Button>Search</Button></Link>,
+        <Link to="/view"  key="view"><Button>View</Button></Link>,
+        <Link to="/upload"  key="upload"><Button>Upload</Button></Link>,
         <Button key="connect" type="danger">Connect</Button>
       ]
     }
@@ -22,7 +23,7 @@ export default function Header() {
   }
   return (
     <PageHeader 
-        title={<Title level={3}>🏥 Healers</Title>}
+        title={<Link to="/"><Title level={3}>🏥 Healers</Title></Link>}
         style={{ cursor: "pointer" }} 
         extra={[options()]}
     />

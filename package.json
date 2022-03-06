@@ -23,5 +23,8 @@
     "ethers": "^5.0.0",
     "hardhat": "^2.3.0",
     "husky": "^4.2.5"
+  },
+  "dependencies": {
+    "react-router-dom": "^6.2.2"
   }
 }
