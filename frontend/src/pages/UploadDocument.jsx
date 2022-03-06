@@ -73,7 +73,7 @@ export default function UploadDocument() {
     };
 
     return (
-        <Content style={{ padding: '0 50px', textAlign:"left", margin:"40px auto auto auto", width:"50%"}}>
+        <Content style={{ padding: '0 50px', textAlign:"left", margin:"auto", width:"50%"}}>
             <Title level={3} style={{textAlign:"center"}}>Upload Document</Title>
             <Form
                 layout="vertical"
