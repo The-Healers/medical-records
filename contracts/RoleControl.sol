@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract RoleControl is AccessControl {
   bytes32 public constant VERIFIER_ROLE = keccak256("VERIFIER");
+  bytes32 public constant HEALER_ROLE = keccak256("HEALER");
 
   constructor () {
     // NOTE: Other DEFAULT_ADMIN's can remove other admins, give this role with great care
@@ -22,6 +23,10 @@ contract RoleControl is AccessControl {
     return hasRole(VERIFIER_ROLE, account);
   }
 
+  function isHealer(address account) public virtual view returns(bool){
+    return hasRole(HEALER_ROLE, account);
+  }
+
   // Create a modifier that can be used in other contract to make a pre-check
   // That makes sure that the sender of the transaction (msg.sender)  is a admin
   modifier onlyAdmin() {
@@ -37,5 +42,10 @@ contract RoleControl is AccessControl {
   // Add Verifier role to an address
   function addVerifier(address account) public virtual onlyAdmin {
     grantRole(VERIFIER_ROLE, account);
+  }
+
+  // Add Healer role to an address
+  function addHealer(address account) public virtual onlyAdmin {
+    grantRole(HEALER_ROLE, account);
   }
 }
