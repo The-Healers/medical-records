@@ -1,56 +1,90 @@
 import { Typography, Layout, Button, Input, Form, Select, message, Upload} from "antd";
 import { UploadOutlined } from '@ant-design/icons';
-import React from "react";
+import React, { useState }  from "react";
+import axios from "axios";
 
 const { Content } = Layout;
 const { Title } = Typography;
 const { Option } = Select;
 
+const PROXY_URL = 'https://ancient-sea-28411.herokuapp.com/upload';
+
 export default function UploadDocument() {
-    const onFinish = (values) => {
-        console.log('Success:', values);
-    };
-    
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+
+    const [file, setFile] = useState(null)
+    const [fileList, setFileList] = useState([])
+    const [isUploaded, setIsUploaded] = useState(false)
+    const [isUploadeding, setIsUploading] = useState(false)
+    const [uid, setUid] = useState();
+
+    const handleUpload = () => {
+        uploadFile();
+        if (isUploaded) {
+            // Smart contract logic (store uid in contract)
+        }
+    }
+
+    const uploadFile = () => {
+        if (file) {
+            const formData = new FormData()
+            formData.append('docFile', file)
+            setIsUploading(true)
+            axios.post(PROXY_URL, formData)
+                .then((res) => {
+                    setFile(null)
+                    setFileList(_ => [])
+                    setUid(res.data.data.uid)
+                    setIsUploaded(true)
+                    message.success('upload successfully.');
+                    console.log(res.data.data.uid)
+                })
+                .catch((err) => {
+                    console.log(err)
+                    message.error('upload failed.');
+                })
+                .finally(() => {
+                    setIsUploading(false);
+                });
+        }
     };
 
-    function handleChange(value) {
+    const handleChange = (value) => {
         console.log(`selected ${value}`);
-      }
+    }
 
     const props = {
-        name: 'file',
-        action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-        headers: {
-          authorization: 'authorization-text',
+        onRemove: _ => {
+            setFile(null)
+            setFileList(_ => [])
         },
-        onChange(info) {
-          if (info.file.status !== 'uploading') {
-            console.log(info.file, info.fileList);
-          }
-          if (info.file.status === 'done') {
-            message.success(`${info.file.name} file uploaded successfully`);
-          } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-          }
+        beforeUpload: file => {
+            console.log(file.type)
+            const isPDF = file.type === 'application/pdf';
+            if (!isPDF) {
+                message.error(`${file.name} is not a pdf file`);
+                return true;
+            } else {
+                setFile(file)
+                setFileList(_ => [file])
+                return false;
+            }
         },
-      };
+        fileList
+    };
 
     return (
         <Content style={{ padding: '0 50px', textAlign:"left", margin:"40px auto auto auto", width:"50%"}}>
             <Title level={3} style={{textAlign:"center"}}>Upload Document</Title>
             <Form
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
                 layout="vertical"
             >
-                
-                
                 <Form.Item
                     label="Name"
                     name="name"
-                    rules={[{ required: true, message: 'Please input the document name!' }]}
+                    rules={[{ 
+                        // required: true, 
+                        message: 'Please input the document name!' 
+                    }]}
                 >
                     <Input />
                 </Form.Item>
@@ -58,7 +92,10 @@ export default function UploadDocument() {
                 <Form.Item
                     label="Hospital / Medical location"
                     name="location"
-                    rules={[{ required: true, message: 'Please input medical location!' }]}
+                    rules={[{ 
+                        // required: true, 
+                        message: 'Please input medical location!' 
+                    }]}
                 >
                     <Input />
                 </Form.Item>
@@ -66,7 +103,10 @@ export default function UploadDocument() {
                 <Form.Item
                     label="Doctor / Medical Professions"
                     name="contact"
-                    rules={[{ required: true, message: 'Please input medical contact!' }]}
+                    rules={[{ 
+                        // required: true, 
+                        message: 'Please input medical contact!' 
+                    }]}
                 >
                     <Input />
                 </Form.Item>
@@ -74,7 +114,10 @@ export default function UploadDocument() {
                 <Form.Item
                     label="Access"
                     name="access"
-                    rules={[{ required: true, message: 'Please choose access level!' }]}
+                    rules={[{ 
+                        // required: true, 
+                        message: 'Please choose access level!' 
+                    }]}
                 >
                     <Select onChange={handleChange}>
                         <Option value="public">Public</Option>
@@ -85,7 +128,10 @@ export default function UploadDocument() {
 
                 <Form.Item
                     name="file"
-                    rules={[{ required: true, message: 'Please upload file!' }]}
+                    rules={[{ 
+                        required: true, 
+                        message: 'Please upload file!' 
+                    }]}
                 >
                     <Upload {...props}>
                         <Button icon={<UploadOutlined />}>Click to Upload</Button>
@@ -93,7 +139,7 @@ export default function UploadDocument() {
                 </Form.Item>
                 
                 <Form.Item style={{textAlign:"center"}}>
-                    <Button type="danger" htmlType="submit">Upload</Button>
+                    <Button type="danger" htmlType="submit" onClick={handleUpload}>Upload</Button>
                 </Form.Item>
             </Form>
         </Content>

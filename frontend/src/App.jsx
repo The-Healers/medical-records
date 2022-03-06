@@ -11,9 +11,9 @@ export const App = () => {
   return (
     <>
       <Header />
-      <Landing />
+      {/* <Landing /> */}
       {/* <Search /> */}
-      {/* <List /> */}
+      <List />
       {/* <UploadDocument /> */}
     </>
   );
