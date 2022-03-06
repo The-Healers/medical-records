@@ -8,16 +8,15 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract AuthToken is ERC721URIStorage, AccessControl, Ownable {
+import "./RoleControl.sol";
+
+contract Token is ERC721URIStorage, RoleControl, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
   address contractAddress;
 
-  bytes32 public constant VERIFIER_ROLE = keccak256("VERIFIER_ROLE"); 
-
-  constructor() ERC721("HealerToken", "HEAL") {
-    // Give deployer account all permissions
-    _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+  constructor() ERC721("HealerToken", "HEAL") RoleControl() {
+    console.log("Toke constructor");
   }
 
   // Overide supportsInterface
@@ -26,8 +25,9 @@ contract AuthToken is ERC721URIStorage, AccessControl, Ownable {
   }
 
   // Mint Token
-  function createToken(address to, string memory tokenURI) public onlyRole(VERIFIER_ROLE) returns (uint256) {
-    require(hasRole(VERIFIER_ROLE, msg.sender));
+  function createToken(address to, string memory tokenURI) public returns (uint256) {
+    // require(hasRole(VERIFIER_ROLE, msg.sender), "Only verifier can mint token");
+    require(isVerifier(msg.sender), "Only verifier can mint token");
     _tokenIds.increment();
     uint256 newItemId = _tokenIds.current();
 
@@ -36,5 +36,9 @@ contract AuthToken is ERC721URIStorage, AccessControl, Ownable {
     return newItemId;
   }
   
-  // TODO Add functions for issuing and permissions of tokens
+  // Burn Token
+  function burnToken(uint256 tokenId) public {
+    require(isVerifier(msg.sender), "Only verifier can burn token");
+    _burn(tokenId);
+  }
 }
