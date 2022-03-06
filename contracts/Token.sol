@@ -16,7 +16,7 @@ contract Token is ERC721URIStorage, RoleControl, Ownable {
   address contractAddress;
 
   constructor() ERC721("HealerToken", "HEAL") RoleControl() {
-    console.log("Toke constructor");
+    console.log("Token constructor");
   }
 
   // Overide supportsInterface
