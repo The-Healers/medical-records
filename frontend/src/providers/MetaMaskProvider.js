@@ -30,6 +30,7 @@ export const MetaMaskProvider = ({ children }) => {
     localhost: "0x7a69",
     rinkeby: "0x4",
     mainnet: "0x1",
+    mumbai: "80001",
   };
 
   let currentChain;
@@ -45,6 +46,7 @@ export const MetaMaskProvider = ({ children }) => {
     case "mumbai":
       currentChain = chainId["mumbai"];
       address = "0x7a69";
+      break;
     default:
       currentChain = chainId["mainnet"];
       break;
