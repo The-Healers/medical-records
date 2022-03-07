@@ -13,7 +13,10 @@ contract RoleControl is AccessControl {
 
     // SETUP role Hierarchy:
     _setRoleAdmin(VERIFIER_ROLE, DEFAULT_ADMIN_ROLE);
+    _setRoleAdmin(HEALER_ROLE, VERIFIER_ROLE);
+    _setRoleAdmin(HEALER_ROLE, DEFAULT_ADMIN_ROLE);
   }
+
 
   function isAdmin(address account) public virtual view returns(bool){
     return hasRole(DEFAULT_ADMIN_ROLE, account);
@@ -28,9 +31,18 @@ contract RoleControl is AccessControl {
   }
 
   // Create a modifier that can be used in other contract to make a pre-check
-  // That makes sure that the sender of the transaction (msg.sender)  is a admin
   modifier onlyAdmin() {
     require(isAdmin(msg.sender), "Restricted to admins.");
+    _;
+  }
+
+  modifier onlyVerifier() {
+    require(isVerifier(msg.sender), "Restricted to verifiers.");
+    _;
+  }
+
+  modifier onlyHealer() {
+    require(isHealer(msg.sender), "Restricted to healers.");
     _;
   }
 
@@ -45,7 +57,22 @@ contract RoleControl is AccessControl {
   }
 
   // Add Healer role to an address
-  function addHealer(address account) public virtual onlyAdmin {
+  function addHealer(address account) public virtual onlyVerifier {
     grantRole(HEALER_ROLE, account);
+  }
+
+  // Remove a user address as a admin
+  function removeAdmin(address account) public virtual onlyAdmin {
+    revokeRole(DEFAULT_ADMIN_ROLE, account);
+  }
+
+  // Remove Verifier role from an address
+  function removeVerifier(address account) public virtual onlyAdmin {
+    revokeRole(VERIFIER_ROLE, account);
+  }
+
+  // Remove Healer role from an address
+  function removeHealer(address account) public virtual onlyVerifier {
+    revokeRole(HEALER_ROLE, account);
   }
 }

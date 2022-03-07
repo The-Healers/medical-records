@@ -19,11 +19,11 @@ async function main() {
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  const Token = await ethers.getContractFactory("Token");
-  const token = await Token.deploy();
-  await token.deployed();
+  // const Token = await ethers.getContractFactory("Token");
+  // const token = await Token.deploy();
+  // await token.deployed();
 
-  console.log("Token address:", token.address);
+  // console.log("Token address:", token.address);
 
   const RoleControl = await ethers.getContractFactory("RoleControl");
   const roleControl = await RoleControl.deploy();
@@ -31,9 +31,16 @@ async function main() {
 
   console.log("RoleControl address:", roleControl.address);
 
+  const Documents = await ethers.getContractFactory("Documents");
+  const documents = await Documents.deploy();
+  await documents.deployed();
+
+  console.log("Documents address:", documents.address);
+
   // We also save the contract's artifacts and address in the frontend directory
-  saveFrontendFiles(token);
+  // saveFrontendFiles(token);
   saveFrontendFiles(roleControl);
+  saveFrontendFiles(documents);
 }
 
 function saveFrontendFiles(token) {
