@@ -1,6 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
-const fs = require('fs')
-const privateKey = fs.readFileSync(".secret").toString().trim() || "01234567890123456789"
+const fs = require("fs");
+const privateKey =
+  fs.readFileSync(".secret").toString().trim() || "01234567890123456789";
 
 // The next line is part of the sample project, you don't need it in your
 // project. It imports a Hardhat task definition, that can be used for
@@ -34,7 +35,7 @@ module.exports = {
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {
-      chainId: 31337
+      chainId: 31337,
     },
     mumbai: {
       url: "https://polygon-mumbai.g.alchemy.com/v2/7mEHBbO3oXox13fx4MMoO_eJ7IJxC3GX",
