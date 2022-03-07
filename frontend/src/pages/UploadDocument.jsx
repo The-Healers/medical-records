@@ -14,7 +14,7 @@ export default function UploadDocument() {
     const [file, setFile] = useState(null)
     const [fileList, setFileList] = useState([])
     const [isUploaded, setIsUploaded] = useState(false)
-    const [isUploadeding, setIsUploading] = useState(false)
+    const [isUploading, setIsUploading] = useState(false)
     const [uid, setUid] = useState();
 
     const handleUpload = () => {
