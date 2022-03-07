@@ -37,7 +37,7 @@ module.exports = {
       chainId: 31337
     },
     mumbai: {
-      url: "https://rpc-mumbai.matic.today",
+      url: "https://polygon-mumbai.g.alchemy.com/v2/7mEHBbO3oXox13fx4MMoO_eJ7IJxC3GX",
       accounts: [privateKey]
     }
   }
