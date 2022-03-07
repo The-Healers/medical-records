@@ -7,7 +7,7 @@ import axios from "axios";
 const { Content } = Layout;
 const { Title } = Typography;
 
-const PROXY_URL = 'http://localhost:5000'; // https://ancient-sea-28411.herokuapp.com
+const PROXY_URL = 'https://ancient-sea-28411.herokuapp.com';
 
 export default function List() {
 
