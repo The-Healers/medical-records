@@ -1,4 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
   walletAddress: "",
@@ -15,6 +16,8 @@ export const MetaMaskProvider = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState("");
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [error, setError] = useState("");
+
+  let navigate = useNavigate();
 
   const chainId = {
     localhost: "0x539",
@@ -51,6 +54,13 @@ export const MetaMaskProvider = ({ children }) => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (isWalletConnected) {
+      console.log("working?");
+      navigate("./view");
+    }
+  }, [isWalletConnected]);
 
   return (
     <MetaMaskContext.Provider
