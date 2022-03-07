@@ -24,8 +24,31 @@ export const MetaMaskProvider = ({ children }) => {
 
   let navigate = useNavigate();
 
-  const currentChain = "137";
-  const address = "0x5fbFA4592A9996846857bAD007db6e6CA072920E";
+  const environment = "development";
+
+  const chainId = {
+    localhost: "0x7a69",
+    rinkeby: "0x4",
+    mainnet: "0x1",
+  };
+
+  let currentChain;
+  let address;
+  switch (environment) {
+    case "development":
+      currentChain = chainId["localhost"];
+      address = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512";
+      break;
+    case "test":
+      currentChain = chainId["rinkeby"];
+      break;
+    case "mumbai":
+      currentChain = chainId["mumbai"];
+      address = "0x7a69";
+    default:
+      currentChain = chainId["mainnet"];
+      break;
+  }
 
   const connectWallet = async () => {
     try {
