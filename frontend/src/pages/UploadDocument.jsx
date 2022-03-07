@@ -7,7 +7,7 @@ const { Content } = Layout;
 const { Title } = Typography;
 const { Option } = Select;
 
-const PROXY_URL = 'https://ancient-sea-28411.herokuapp.com/upload';
+const PROXY_URL = 'https://ancient-sea-28411.herokuapp.com';
 
 export default function UploadDocument() {
 
@@ -17,25 +17,21 @@ export default function UploadDocument() {
     const [isUploading, setIsUploading] = useState(false)
     const [uid, setUid] = useState();
 
-    const handleUpload = () => {
-        uploadFile();
-        if (isUploaded) {
-            // Smart contract logic (store uid in contract)
-        }
-    }
-
-    const uploadFile = () => {
+    const uploadFile = (values) => {
         if (file) {
             const formData = new FormData()
             formData.append('docFile', file)
             setIsUploading(true)
-            axios.post(PROXY_URL, formData)
+            axios.post(`${PROXY_URL}/upload-doc`, formData)
+            .then((res) => {
+                const docUID = res.data.data.uid
+                axios.post(`${PROXY_URL}/upload-metadata`, {...values, docUID})
                 .then((res) => {
                     setFile(null)
                     setFileList(_ => [])
-                    setUid(res.data.data.uid)
                     setIsUploaded(true)
                     message.success('upload successfully.');
+                    setUid(res.data.data.uid)
                     console.log(res.data.data.uid)
                 })
                 .catch((err) => {
@@ -45,12 +41,23 @@ export default function UploadDocument() {
                 .finally(() => {
                     setIsUploading(false);
                 });
+            })
+            .catch((err) => {
+                console.log(err)
+                message.error('upload failed.');
+            })
         }
     };
 
-    const handleChange = (value) => {
-        console.log(`selected ${value}`);
-    }
+    const onFinish = (values) => {
+        uploadFile(values);
+        // Store uid in smart contract string arr
+
+    };
+
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
 
     const props = {
         onRemove: _ => {
@@ -77,12 +84,14 @@ export default function UploadDocument() {
             <Title level={3} style={{textAlign:"center"}}>Upload Document</Title>
             <Form
                 layout="vertical"
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
             >
                 <Form.Item
                     label="Name"
                     name="name"
                     rules={[{ 
-                        // required: true, 
+                        required: true, 
                         message: 'Please input the document name!' 
                     }]}
                 >
@@ -93,7 +102,7 @@ export default function UploadDocument() {
                     label="Hospital / Medical location"
                     name="location"
                     rules={[{ 
-                        // required: true, 
+                        required: true, 
                         message: 'Please input medical location!' 
                     }]}
                 >
@@ -104,7 +113,7 @@ export default function UploadDocument() {
                     label="Doctor / Medical Professions"
                     name="contact"
                     rules={[{ 
-                        // required: true, 
+                        required: true, 
                         message: 'Please input medical contact!' 
                     }]}
                 >
@@ -115,14 +124,14 @@ export default function UploadDocument() {
                     label="Access"
                     name="access"
                     rules={[{ 
-                        // required: true, 
+                        required: true, 
                         message: 'Please choose access level!' 
                     }]}
                 >
-                    <Select onChange={handleChange}>
-                        <Option value="public">Public</Option>
-                        <Option value="private">Private</Option>
-                        <Option value="restricted">Restricted</Option>
+                    <Select>
+                        <Option value="Public">Public</Option>
+                        <Option value="Private">Private</Option>
+                        <Option value="Restricted">Restricted</Option>
                     </Select>
                 </Form.Item>
 
@@ -139,7 +148,7 @@ export default function UploadDocument() {
                 </Form.Item>
                 
                 <Form.Item style={{textAlign:"center"}}>
-                    <Button type="danger" htmlType="submit" onClick={handleUpload}>Upload</Button>
+                    <Button type="danger" htmlType="submit" >Upload</Button>
                 </Form.Item>
             </Form>
         </Content>

@@ -10,17 +10,17 @@ export default function Header() {
   const {isWalletConnected, walletAddress} = useMetaMask();
 
   const options = () => {
-    if (!isWalletConnected) {
+    if (isWalletConnected) {
       return [
         <Link to="/search"  key="search"><Button>Search</Button></Link>,
         <Link to="/view"  key="view"><Button>View</Button></Link>,
         <Link to="/upload"  key="upload"><Button>Upload</Button></Link>,
-        <Connect text={'Connect'} />
+        <Button key="address" type="dashed" disabled>{`${walletAddress.substring(0,8)}...`}</Button>,
       ]
     }
 
     return [
-      <Button key="address" type="dashed" disabled>{walletAddress}</Button>
+      <Connect text={'Connect'} />
     ]
   }
   return (
