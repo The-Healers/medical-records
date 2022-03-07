@@ -1,50 +1,60 @@
 import { Typography, Layout, Button, Row, Table} from "antd";
 import { LinkOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 const { Content } = Layout;
 const { Title } = Typography;
 
-const PROXY_URL = 'https://ancient-sea-28411.herokuapp.com/';
+const PROXY_URL = 'http://localhost:5000'; // https://ancient-sea-28411.herokuapp.com
 
-export default function Search() {
+export default function List() {
 
     const [source, setSource] = useState([]);
     
-    const getFileByKey = (index, pdfFile) => {
-        axios.get(PROXY_URL, { params: { key: pdfFile}, responseType:"blob"})
+    const getFileByKey = (metadataUID) => {
+
+        axios.get(`${PROXY_URL}/metadata`, { params: { key: metadataUID } })
+        .then(res => {
+            const { name, location, contact, access, docUID } = res.data.data
+
+            axios.get(`${PROXY_URL}/doc`, { params: { key: docUID }, responseType:"blob"})
             .then(res => {
                 var blob = new Blob([res.data], {type: 'application/pdf'});
                 var blobURL = URL.createObjectURL(blob);
                 setSource(prev => [...prev, {
-                    key: index,
-                    name: pdfFile,
-                    location: `Hospital ${index}`,
-                    contact: 'Dr. Adams',
-                    access: 'Public',
+                    key: docUID,
+                    name,
+                    location,
+                    contact,
+                    access,
                     link: blobURL,
                 }])
             })
             .catch(error => {
                 console.log(error)
             })
+        })
+        .catch(error => {
+            console.log(error)
+        })
+
     }
 
     useEffect(() => {
         // Example way to use, replace with smart contract's patient list of document ids
-        const test_data = ["ape.pdf", "ape2.pdf", "ape3.pdf"]
+        const test_data = ["bee16e9d-5f91-4525-a184-06ddd9b3708e"]
         for (let i = 0; i < test_data.length; i++) {
-            getFileByKey(i, test_data[i]);
+            getFileByKey(test_data[i]);
         }
     }, [])
 
     return (
         <Content style={{ padding: '0 50px', textAlign:"left", margin:"40px auto auto auto", width:"75%"}}>
-            
             <Row justify="space-between">
                 <Title level={3}>Documents</Title>
-                <Button type="danger">Add</Button>
+                <Link to="/upload"><Button type="danger">Add</Button></Link>
             </Row>
             <Table dataSource={source} columns={columns} />
         </Content>
@@ -76,6 +86,6 @@ const columns = [
         title: 'Link',
         dataIndex: 'link',
         key: 'link',
-        render: text => <a href={text} target="_blank"><LinkOutlined /></a>,
+        render: text => <a href={text} target="_blank" rel="noopener noreferrer"><LinkOutlined /></a>,
     },
 ];
