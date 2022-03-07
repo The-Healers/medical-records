@@ -1,11 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ethers } from "ethers";
+
+import DocumentContractJSON from "../contracts/Documents.json";
 
 const initialState = {
   walletAddress: "",
   isWalletConnected: false,
   error: "",
   connectWallet: () => {},
+  getDocuments: () => {},
+  uploadDocuments: () => {},
 };
 
 export const MetaMaskContext = React.createContext(initialState);
@@ -19,12 +24,28 @@ export const MetaMaskProvider = ({ children }) => {
 
   let navigate = useNavigate();
 
+  const environment = "development";
+
   const chainId = {
-    localhost: "0x539",
+    localhost: "0x7a69",
     rinkeby: "0x4",
     mainnet: "0x1",
   };
-  const currentChain = chainId["localhost"];
+
+  let currentChain;
+  let address;
+  switch (environment) {
+    case "development":
+      currentChain = chainId["localhost"];
+      address = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512";
+      break;
+    case "test":
+      currentChain = chainId["rinkeby"];
+      break;
+    default:
+      currentChain = chainId["mainnet"];
+      break;
+  }
 
   const connectWallet = async () => {
     try {
@@ -32,6 +53,7 @@ export const MetaMaskProvider = ({ children }) => {
         const connectedChain = await window.ethereum.request({
           method: "eth_chainId",
         });
+        console.log("trying to connect", connectedChain);
         if (connectedChain === currentChain) {
           const accounts = await window.ethereum.request({
             method: "eth_requestAccounts",
@@ -55,16 +77,50 @@ export const MetaMaskProvider = ({ children }) => {
     }
   };
 
+  const provideDocumentContract = () => {
+    try {
+      const ethereum = window.ethereum;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        return new ethers.Contract(address, DocumentContractJSON.abi, signer);
+      }
+    } catch (error) {
+      console.log(error);
+      setError("Something's wrong... please try again.");
+    }
+  };
+
+  const getDocuments = async (walletAddress) => {
+    const DocumentContract = provideDocumentContract();
+
+    const documents = await DocumentContract.get(walletAddress);
+
+    return documents;
+  };
+
+  const uploadDocuments = async (key, walletAddress) => {
+    const DocumentContract = provideDocumentContract();
+
+    await DocumentContract.update(key, walletAddress);
+  };
+
   useEffect(() => {
     if (isWalletConnected) {
-      console.log("working?");
       navigate("./view");
     }
   }, [isWalletConnected]);
 
   return (
     <MetaMaskContext.Provider
-      value={{ walletAddress, isWalletConnected, connectWallet, error }}
+      value={{
+        walletAddress,
+        isWalletConnected,
+        connectWallet,
+        error,
+        getDocuments,
+        uploadDocuments,
+      }}
     >
       {children}
     </MetaMaskContext.Provider>
