@@ -24,7 +24,7 @@ export const MetaMaskProvider = ({ children }) => {
 
   let navigate = useNavigate();
 
-  const environment = "development";
+  const environment = "mumbai";
 
   const chainId = {
     localhost: "0x7a69",
@@ -32,6 +32,9 @@ export const MetaMaskProvider = ({ children }) => {
     mainnet: "0x1",
     mumbai: "0x13881",
   };
+
+  // const roleControlContractAddress = "0x9615432C5902BAd5Fe124ca56b2ad371a61C5Dce"
+  const documentsContractAddress = "0x8087D09fD16B472913b0789b5B5c21C667dfa8e3"
 
   let currentChain;
   let address;
@@ -45,7 +48,7 @@ export const MetaMaskProvider = ({ children }) => {
       break;
     case "mumbai":
       currentChain = chainId["mumbai"];
-      address = "";
+      address = documentsContractAddress;
       break;
     default:
       currentChain = chainId["mainnet"];
