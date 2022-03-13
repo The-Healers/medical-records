@@ -13,7 +13,7 @@ export const AppSwitch = () => {
         <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<Landing />} />
-          <Route path="search" element={<RequireWallet><Search /></RequireWallet>} />
+          {/* <Route path="search" element={<RequireWallet><Search /></RequireWallet>} /> */}
           <Route path="view" element={<RequireWallet><List /></RequireWallet>} />
           <Route path="upload" element={<RequireWallet><UploadDocument /></RequireWallet>} />
         </Route>

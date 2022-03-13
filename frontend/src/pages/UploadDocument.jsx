@@ -12,6 +12,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import axios from "axios";
 import { useMetaMask } from "../providers/MetaMaskProvider";
+import { useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -21,6 +22,7 @@ const PROXY_URL = "https://ancient-sea-28411.herokuapp.com";
 
 export default function UploadDocument() {
   const { uploadDocuments, walletAddress } = useMetaMask();
+  const navigate = useNavigate()
 
   const [file, setFile] = useState(null);
   const [fileList, setFileList] = useState([]);
@@ -53,6 +55,7 @@ export default function UploadDocument() {
       message.error("upload failed.");
     } finally {
       setIsUploading(false);
+      navigate("/view")
     }
   };
 
@@ -129,7 +132,7 @@ export default function UploadDocument() {
         </Form.Item>
 
         <Form.Item
-          label="Doctor / Medical Professions"
+          label="Doctor / Medical Professional"
           name="contact"
           rules={[
             {
@@ -174,7 +177,7 @@ export default function UploadDocument() {
 
         <Form.Item style={{ textAlign: "center" }}>
           <Button type="danger" htmlType="submit">
-            Upload
+            {isUploading ? "Uploading..." : "Upload"}
           </Button>
         </Form.Item>
       </Form>

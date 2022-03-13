@@ -14,9 +14,10 @@ export default function List() {
   const { getDocuments, walletAddress } = useMetaMask();
 
   const [source, setSource] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const getFileByKey = (metadataUID) => {
-    axios
+  const getFileByKey = async (metadataUID) => {
+    await axios
       .get(`${PROXY_URL}/metadata`, { params: { key: metadataUID } })
       .then((res) => {
         const { name, location, contact, access, docUID } = res.data.data;
@@ -52,10 +53,12 @@ export default function List() {
 
   const callGetDoucments = async () => {
     console.log(walletAddress);
+    setLoading(true);
     const documents = await getDocuments(walletAddress);
     for (let i = 0; i < documents.length; i++) {
       getFileByKey(documents[i]);
     }
+    setLoading(false);
     console.log(documents);
   };
 
@@ -80,7 +83,13 @@ export default function List() {
           <Button type="danger">Add</Button>
         </Link>
       </Row>
-      <Table dataSource={source} columns={columns} />
+      {!loading ? <Table dataSource={source} columns={columns} /> : <div style={{
+        textAlign: "center",
+        margin: "auto",
+        width: "50%",
+        fontSize: "20px",
+        opacity: "0.6",
+      }}>Loading...</div>}
     </Content>
   );
 }

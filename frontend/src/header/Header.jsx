@@ -12,7 +12,7 @@ export default function Header() {
   const options = () => {
     if (isWalletConnected) {
       return [
-        <Link to="/search"  key="search"><Button>Search</Button></Link>,
+        // <Link to="/search"  key="search"><Button>Search</Button></Link>,
         <Link to="/view"  key="view"><Button>View</Button></Link>,
         <Link to="/upload"  key="upload"><Button>Upload</Button></Link>,
         <Button key="address" type="dashed" disabled>{`${walletAddress.substring(0,8)}...`}</Button>,
